@@ -1,0 +1,40 @@
+class Compilador:
+    def __init__(self):
+        self.variables = {}
+
+    def miau(self, mensaje):
+        print(mensaje)
+
+    def piopio(self, tipo, nombre):
+        self.variables[nombre] = tipo
+
+    def guau(self, nombre):
+        valor = input(f"Ingrese el valor de {nombre}: ")
+        self.variables[nombre] = valor
+
+    def runrun(self, funcion):
+        funcion()
+
+    def pipi(self, valor):
+        return valor
+
+    def garr(self, condicion, entonces):
+        if condicion:
+            entonces()
+
+    def garra(self, sino):
+        if condicion:
+            entonces()
+        else:
+            sino()
+
+    def fin(self):
+        print()
+
+    def div(self, a, b):
+        return a % b
+
+    def igualx2(self, a, b):
+        return a == b
+
+compilador = Compilador()
