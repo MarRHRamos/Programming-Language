@@ -1,32 +1,61 @@
-import re
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
 
-# Gramática
-grammar = [
-    ("E", "T ([+|-]) T"), 
-    ("T", "F ([*/] F)"), 
-    ("F", r"([0-9]+\.?)[0-9]*|([a-zA-Z_][a-zA-Z_0-9]*)")
-]
+using namespace std;
 
-# Función para analizar la gramática
-def analyze_grammar(input_string):
-    for production in grammar:
-        pattern = re.compile(rf"^{production[1]}$")  # Compilamos el patrón
-        if pattern.match(input_string):
-            return production[0]  # Devolvemos el símbolo del lado izquierdo
+struct Regla {
+    string simbolo_izquierdo;
+    vector<string> simbolo_derecho;
+};
 
-# Función para generar un lenguaje
-def generate_language(input_string):
-    token = analyze_grammar(input_string)
-    if token == "E":
-        # Generamos el lenguaje
-        print("Variable:", input_string)
-    elif token == "T":
-        # Generamos el lenguaje
-        print("Número:", input_string)
-    elif token == "F":
-        # Generamos el lenguaje
-        print("Variable o número:", input_string)
+vector<string> generar_oraciones(vector<Regla> reglas, string simbolo_inicial) {
+    vector<string> oraciones;
+    vector<string> palabras;
 
-# Ejemplo de uso
-input_string = "2 + 3 * x"
-generate_language(input_string)
+    palabras.push_back(simbolo_inicial);
+
+    while (!palabras.empty()) {
+        string palabra = palabras.back();
+        palabras.pop_back();
+
+        bool regla_encontrada = false;
+        for (const Regla& regla : reglas) {
+            if (regla.simbolo_izquierdo == palabra) {
+                for (const string& simbolo : regla.simbolo_derecho) {
+                    string nueva_palabra = palabra;
+                    nueva_palabra.replace(nueva_palabra.find(regla.simbolo_izquierdo), regla.simbolo_izquierdo.length(), simbolo);
+                    palabras.push_back(nueva_palabra);
+                }
+                regla_encontrada = true;
+                break;
+            }
+        }
+
+        if (!regla_encontrada) {
+            oraciones.push_back(palabra);
+        }
+    }
+
+    return oraciones;
+}
+
+int main() {
+    vector<Regla> reglas = {
+        {"vo", {"(vo)"}},
+        {"vo", {"a + v1"}},
+        {"v1", {"a + v2"}},
+        {"v2", {"a + v2"}},
+        {"v2", {"a"}}
+    };
+
+    vector<string> oraciones = generar_oraciones(reglas, "vo");
+
+    cout << "Oraciones sintácticamente correctas:\n";
+    for (const string& oracion : oraciones) {
+        cout << oracion << endl;
+    }
+
+    return 0;
+}
