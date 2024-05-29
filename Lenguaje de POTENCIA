@@ -1,0 +1,47 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+void generarLenguaje(int n, int p) {
+    vector<int> alfabeto(n);
+    vector<string> lenguaje;
+
+    for (int i = 0; i < n; i++) {
+        alfabeto[i] = i;
+    }
+
+    for (int i = 0; i <= p; i++) {
+        lenguaje.clear();
+        for (int j = 0; j < pow(n, i); j++) {
+            string combinacion;
+            int numero = j;
+            for (int k = 0; k < i; k++) {
+                combinacion += to_string(numero % n);
+                numero /= n;
+            }
+            reverse(combinacion.begin(), combinacion.end());
+            lenguaje.push_back(combinacion);
+        }
+        cout << "L^" << i << " = [";
+        for (int j = 0; j < lenguaje.size(); j++) {
+            cout << lenguaje[j];
+            if (j < lenguaje.size() - 1) {
+                cout << ", ";
+            }
+        }
+        cout << "]" << endl;
+    }
+}
+
+int main() {
+    int n, p;
+    cout << "Tamaño del alfabeto: ";
+    cin >> n;
+    cout << "Potencia del lenguaje: ";
+    cin >> p;
+    generarLenguaje(n, p);
+    return 0;
+}
