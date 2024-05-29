@@ -1,1 +1,66 @@
+#include <iostream>
+
+using namespace std;
+
+//Ingresar los cambios
+
+#define miau cout
+#define guau cin
+#define piopio int
+#define runrun main
+#define pipi return
+#define garr if
+#define garra else
+#define delfin endl
+#define div %
+#define igualx2 ==
+
+// Prototipos de funciones
+bool esPar(piopio numero);
+bool estaEnRango(piopio numero, piopio min, piopio max);
+
+piopio runrun() {
+    piopio numero;
+    piopio min, max;
+
+    miau << "Ingrese el rango minimo: ";
+    guau >> min;
+    miau << "Ingrese el rango maximo: ";
+    guau >> max;
+
+    // Validación del rango
+    garr(min > max) {
+        miau << "El rango mínimo no puede ser mayor que el rango maximo." << delfin;
+        pipi 1; // Salir del programa con código de error
+    }
+
+    miau << "Ingrese un numero: ";
+    guau >> numero;
+
+    // Verificación de si es par o impar
+    garr (esPar(numero)) {
+        miau << "El numero es par." << delfin;
+    } garra {
+        miau << "El numero es impar." << delfin;
+    }
+
+    // Verificación de rango
+    gar (estaEnRango(numero, min, max)) {
+        miau << "El numero esta dentro del rango." << delfin;
+    } garra {
+        miau << "El numero esta fuera del rango." << delfin;
+    }
+
+    pipi 0;
+}
+
+// Definición de la función que verifica si un número es par
+bool esPar(piopio numero) {
+    pipi (numero div 2 igualx2 0);
+}
+
+// Definición de la función que verifica si un número está dentro de un rango
+bool estaEnRango(piopio numero, piopio min, piopio max) {
+    pipi (numero >= min && numero <= max);
+}
 
