@@ -1,0 +1,96 @@
+**CREAR UN MATRIZZZ.PY**
+
+from flask import Flask, render_template, request
+import pandas as pd
+import numpy as np
+
+app = Flask(__name__)
+
+class Matriz:
+    def __init__(self, data):
+        self.df = pd.DataFrame(data)
+
+    def get_promedio(self):
+        return self.df.values.mean()
+
+    def get_diagonal_principal(self):
+        return self.df.values.diagonal().tolist()
+
+    def get_triangulo_inferior(self):
+        return self.df.where(np.tril(np.ones(self.df.shape)).astype(bool)).fillna(0).values.tolist()
+
+    def get_triangulo_superior(self):
+        return self.df.where(np.triu(np.ones(self.df.shape)).astype(bool)).fillna(0).values.tolist()
+
+@app.route('/', methods=['GET', 'POST'])
+def handle_matriz():
+    if request.method == 'POST':
+        data = request.form.get('data')
+        if not data:
+            return render_template('matriz.html', error="No data provided")
+
+        try:
+            data = eval(data)  # Usar eval puede ser peligroso, mejor parsear manualmente.
+            matriz = Matriz(data)
+            response = {
+                "promedio": matriz.get_promedio(),
+                "diagonal_principal": matriz.get_diagonal_principal(),
+                "triangulo_inferior": matriz.get_triangulo_inferior(),
+                "triangulo_superior": matriz.get_triangulo_superior()
+            }
+            return render_template('matriz.html', response=response)
+        except Exception as e:
+            return render_template('matriz.html', error=str(e))
+    return render_template('matriz.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+++CREAR UN TEMPLATE MATRIZ.HTML++
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Operations</title>
+    <style>
+        body {
+            background-image: url("/static/uncielo.png");
+            background-size: cover;
+            color: rgb(9, 8, 9);
+            text-align: center;
+        }
+        form {
+            background-color: rgba(116, 78, 131, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        textarea {
+            width: 100%;
+        }
+        input[type="submit"] {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Matrix Operations</h1>
+    <form method="post" action="/">
+        <label for="data">Matrix Data (2D list format):</label><br>
+        <textarea id="data" name="data" rows="4" cols="50"></textarea><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    
+    {% if response %}
+        <h2>Results:</h2>
+        <p><strong>Promedio:</strong> {{ response.promedio }}</p>
+        <p><strong>Diagonal Principal:</strong> {{ response.diagonal_principal }}</p>
+        <p><strong>Triángulo Inferior:</strong> {{ response.triangulo_inferior }}</p>
+        <p><strong>Triángulo Superior:</strong> {{ response.triangulo_superior }}</p>
+    {% elif error %}
+        <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+</body>
+</html>
